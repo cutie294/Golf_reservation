@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>티업스팟 (TeeUpSpot) - 골프장 탐색 & AI 맞춤 추천</title>
+  <meta name="description" content="희망하는 라운딩 날짜의 골프장 가격, 티타임, 날씨와 강수확률을 한눈에 비교하고 AI 맞춤 추천을 받아보세요.">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <!-- ========================================== -->
+  <!-- 1. 최상단 헤더 영역 -->
+  <!-- ========================================== -->
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand-group">
+        <span class="brand-badge" aria-hidden="true">⛳</span>
+        <h1 class="brand-title">TeeUpSpot</h1>
+      </div>
+      <p class="brand-tagline">날짜만 고르면 티타임, 날씨, 추천까지 한눈에!</p>
+      
+      <!-- 샘플/데모 모드 안내 뱃지 -->
+      <div class="system-status-badge" role="status" aria-label="데이터 모드">
+        <span class="status-dot"></span>
+        <span id="systemModeText">데모 모드 동작 중</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================== -->
+  <!-- 2. 본문 메인 콘텐츠 -->
+  <!-- ========================================== -->
+  <main class="main-content">
+    
+    <!-- 2-1. 검색 패널 (노란색 라운드 패널) -->
+    <section class="panel panel-search" aria-labelledby="search-heading">
+      <div class="panel-header">
+        <span class="panel-emoji" aria-hidden="true">📅</span>
+        <h2 id="search-heading" class="panel-title">오늘 말고, 라운딩할 날을 골라봐요!</h2>
+      </div>
+
+      <form id="searchForm" class="search-form" novalidate>
+        <!-- 라운딩 희망 날짜 선택 (필수) -->
+        <div class="form-group">
+          <label for="playDateInput" class="form-label">
+            <strong>라운딩 희망 날짜</strong> <span class="required-mark" title="필수 입력 항목">*</span>
+          </label>
+          <div class="input-wrapper">
+            <input 
+              type="date" 
+              id="playDateInput" 
+              name="playDate" 
+              class="form-input" 
+              required
+              aria-describedby="dateHelper"
+            >
+          </div>
+          <p id="dateHelper" class="helper-text">과거 날짜는 선택할 수 없으며, 오늘 이후 날짜를 선택해 주세요.</p>
+        </div>
+
+        <!-- 출발 위치 선택 (선택 사항) -->
+        <div class="form-group">
+          <label for="originInput" class="form-label">
+            <strong>출발 위치</strong> <span class="optional-tag">(선택)</span>
+          </label>
+          <div class="input-group-row">
+            <input 
+              type="text" 
+              id="originInput" 
+              name="originAddress" 
+              class="form-input" 
+              placeholder="예: 서울 강남구, 경기 성남시 (선택 입력)"
+              maxlength="100"
+            >
+            <button 
+              type="button" 
+              id="btnGetLocation" 
+              class="btn btn-secondary" 
+              title="내 현재 GPS 위치로 거리 계산하기"
+            >
+              <span aria-hidden="true">📍</span> 내 위치 사용
+            </button>
+          </div>
+          <p id="locationStatus" class="helper-text">
+            출발 위치를 입력하시면 골프장까지의 직선거리와 이동 편의성을 추천에 반영합니다.
+          </p>
+        </div>
+
+        <!-- 검색 실행 버튼 -->
+        <div class="form-actions">
+          <button type="submit" id="btnSubmitSearch" class="btn btn-primary btn-search">
+            <span class="btn-text">골프장 & 날씨 찾아보기</span>
+            <span class="btn-spinner" aria-hidden="true"></span>
+          </button>
+        </div>
+
+        <!-- 입력 오류 안내 메시지 영역 -->
+        <div id="searchFormAlert" class="form-alert" role="alert" aria-live="polite" hidden></div>
+      </form>
+    </section>
+
+    <!-- 2-2. 추천 패널 (보라색 라운드 패널) -->
+    <section id="recommendationSection" class="panel panel-recommendation" aria-labelledby="recommend-heading" hidden>
+      <div class="panel-header">
+        <div class="panel-title-group">
+          <span class="panel-emoji" aria-hidden="true">✨</span>
+          <div>
+            <h2 id="recommend-heading" class="panel-title">AI 맞춤 추천 골프장 TOP 3</h2>
+            <p id="recommendSubtitle" class="panel-desc">날씨 조건과 거리를 종합 분석한 오늘의 추천 코스입니다.</p>
+          </div>
+        </div>
+        <!-- 거리 미적용 안내 태그 -->
+        <div id="distanceNoticeBadge" class="info-tag" hidden>
+          출발 위치 미입력 — 날씨 우선 추천
+        </div>
+      </div>
+
+      <!-- 추천 골프장 카드 목록이 렌더링되는 컨테이너 -->
+      <div id="recommendationCards" class="recommendation-grid"></div>
+    </section>
+
+    <!-- 2-3. 전체 골프장 검색 결과 영역 -->
+    <section id="resultSection" class="panel panel-results" aria-labelledby="results-heading" hidden>
+      <div class="results-header">
+        <h2 id="results-heading" class="results-title">
+          <span id="selectedDateDisplay" class="highlight-date">2026-11-20</span> 검색 결과
+        </h2>
+        <span id="resultCountBadge" class="count-badge">총 0개 골프장</span>
+      </div>
+
+      <!-- 부분 오류 알림 (예: 날씨 API만 일시 실패한 경우) -->
+      <div id="partialErrorAlert" class="partial-error-banner" role="status" hidden></div>
+
+      <!-- 골프장 상세 카드 목록 -->
+      <div id="courseCardsList" class="course-cards-list"></div>
+    </section>
+
+    <!-- 2-4. 상태별 안내 뷰 (초기 안내 / 로딩 / 결과 없음 / 시스템 오류) -->
+    <div id="statusViewContainer" class="status-container">
+      <!-- 초기 시작 안내 -->
+      <div id="idleStateView" class="status-card">
+        <div class="status-icon" aria-hidden="true">⛳</div>
+        <h3 class="status-title">라운딩 희망 날짜를 선택해 주세요</h3>
+        <p class="status-desc">원하시는 날짜를 선택하고 검색 버튼을 누르시면, 실시간 날씨와 티타임을 비교해 드립니다.</p>
+      </div>
+
+      <!-- 로딩 중 상태 -->
+      <div id="loadingStateView" class="status-card" hidden>
+        <div class="loading-spinner" aria-hidden="true"></div>
+        <h3 class="status-title">골프장과 날씨 정보를 모으는 중입니다...</h3>
+        <p class="status-desc">잠시만 기다려 주세요. AI가 최적의 추천 코스를 계산하고 있습니다.</p>
+      </div>
+
+      <!-- 결과 없음 상태 -->
+      <div id="emptyStateView" class="status-card" hidden>
+        <div class="status-icon" aria-hidden="true">🔍</div>
+        <h3 class="status-title">선택한 날짜에 표시할 골프장 정보가 없습니다</h3>
+        <p class="status-desc">다른 날짜를 선택하시거나 검색 조건을 변경해 보세요.</p>
+      </div>
+
+      <!-- 전체 오류 상태 -->
+      <div id="errorStateView" class="status-card error-card" hidden>
+        <div class="status-icon" aria-hidden="true">⚠️</div>
+        <h3 id="errorMessageTitle" class="status-title">정보를 불러오지 못했습니다</h3>
+        <p id="errorMessageDesc" class="status-desc">네트워크 상태를 확인하시거나 잠시 후 다시 시도해 주세요.</p>
+        <button type="button" id="btnRetrySearch" class="btn btn-secondary">다시 시도하기</button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ========================================== -->
+  <!-- 3. 예약하기 버튼 클릭 시 안내 모달 다이얼로그 -->
+  <!-- PRD 요구사항: 실제 예약 연동 없이 명확한 안내 모달을 표시 -->
+  <!-- ========================================== -->
+  <dialog id="bookingNoticeModal" class="booking-modal" aria-labelledby="modalTitle">
+    <div class="modal-box">
+      <div class="modal-icon" aria-hidden="true">ℹ️</div>
+      <h3 id="modalTitle" class="modal-title">골프장 예약 안내</h3>
+      <p id="modalCourseName" class="modal-course-name"></p>
+      <div class="modal-message-box">
+        <p class="modal-message-main">
+          <strong>현재 데모에서는 실제 예약을 지원하지 않습니다.</strong>
+        </p>
+        <p class="modal-message-sub">
+          티타임 예약 및 결제는 해당 골프장의 공식 홈페이지 또는 공식 예약 채널을 이용해 주시기 바랍니다.
+        </p>
+      </div>
+      <div class="modal-actions">
+        <a id="btnGoToWebsite" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-primary" hidden>
+          공식 홈페이지 방문하기
+        </a>
+        <button type="button" id="btnCloseModal" class="btn btn-secondary">확인 (닫기)</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- ========================================== -->
+  <!-- 4. 하단 푸터 영역 -->
+  <!-- ========================================== -->
+  <footer class="app-footer">
+    <p>© 2026 TeeUpSpot. 교육 및 포트폴리오 목적의 골프장 탐색 데모 서비스입니다.</p>
+    <p class="footer-disclaimer">
+      본 서비스에 표시되는 티타임, 가격, 날씨 데이터는 시뮬레이션 데모 데이터가 포함되어 있을 수 있습니다.
+    </p>
+  </footer>
+
+  <!-- 자바스크립트 모듈 로드 -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
+

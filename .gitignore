@@ -1,0 +1,33 @@
+# ========================================================
+# [.gitignore - 깃 업로드 제외 파일 목록]
+# 주의: 비밀 키가 포함된 .env와 용량이 큰 node_modules는 절대 깃에 올라가지 않도록 차단합니다.
+# ========================================================
+
+# 1. 환경 변수 및 비밀 키 파일 (보안 최우선)
+.env
+.env.local
+.env.*.local
+.env.production
+.env.development
+
+# 단, 환경변수 템플릿인 .env.example은 다른 개발자를 위해 깃에 포함합니다.
+!.env.example
+
+# 2. 설치된 외부 라이브러리 및 의존성 모듈 (용량 최적화)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+
+# 3. Vercel 및 로컬 빌드 산출물
+.vercel
+dist/
+build/
+
+# 4. 운영체제 및 에디터 임시 설정 파일
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp

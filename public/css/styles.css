@@ -1,0 +1,887 @@
+/* ========================================================
+   styles.css — 티업스팟 (TeeUpSpot) 스타일 시트
+   디자인 콘셉트: 어두운 배경 + 볼드하고 둥근 노랑/보라/핑크 패널
+   ======================================================== */
+
+/* 1. 디자인 토큰 (CSS 변수 정의) */
+:root {
+  --bg-main: #0e0e10;
+  --bg-surface: #18181c;
+  
+  /* 테마 시그니처 색상 (디자인 가이드) */
+  --panel-yellow: #F4E95A;
+  --panel-purple: #8B63EE;
+  --panel-pink: #F093B0;
+  --panel-cream: #FFF7E8;
+  --panel-green: #2ecc71;
+  
+  /* 텍스트 색상 */
+  --text-dark: #121214;
+  --text-muted-dark: #4a4a50;
+  --text-light: #F7F4EC;
+  --text-muted-light: #a0a0aa;
+
+  /* 상태 색상 */
+  --color-error: #ef4444;
+  --color-warning: #f59e0b;
+  --color-success: #10b981;
+  --color-info: #3b82f6;
+
+  /* 둥근 모서리 반경 */
+  --radius-panel: 32px;
+  --radius-card: 22px;
+  --radius-pill: 9999px;
+  --radius-input: 16px;
+
+  /* 그림자 */
+  --shadow-soft: 0 10px 25px rgba(0, 0, 0, 0.35);
+  --shadow-card: 0 4px 15px rgba(0, 0, 0, 0.15);
+  --shadow-btn: 0 4px 12px rgba(0, 0, 0, 0.2);
+
+  /* 폰트 */
+  --font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", Roboto, sans-serif;
+}
+
+/* 2. 전역 리셋 & 기본 설정 */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg-main);
+  color: var(--text-light);
+  font-family: var(--font-family);
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 키보드 접근성 포커스 스타일 */
+:focus-visible {
+  outline: 3px solid #F4E95A;
+  outline-offset: 3px;
+}
+
+/* 3. 상단 헤더 */
+.app-header {
+  padding: 2.5rem 1.5rem 1.5rem;
+  background: linear-gradient(180deg, #16161b 0%, var(--bg-main) 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.header-inner {
+  max-width: 1040px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.6rem;
+}
+
+.brand-group {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.brand-badge {
+  font-size: 2.2rem;
+  filter: drop-shadow(0 2px 8px rgba(244, 233, 90, 0.4));
+}
+
+.brand-title {
+  font-size: 2.4rem;
+  font-weight: 900;
+  letter-spacing: -1px;
+  color: #ffffff;
+  background: linear-gradient(135deg, #ffffff 40%, var(--panel-yellow) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.brand-tagline {
+  color: var(--text-muted-light);
+  font-size: 1.05rem;
+  font-weight: 500;
+}
+
+.system-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.35rem 0.9rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-pill);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  margin-top: 0.4rem;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  background-color: var(--panel-green);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--panel-green);
+}
+
+/* 4. 메인 콘텐츠 컨테이너 */
+.main-content {
+  flex: 1;
+  max-width: 1040px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+/* 5. 공통 패널 스타일 (큰 둥근 패널) */
+.panel {
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-soft);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 1.5rem;
+}
+
+.panel-emoji {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.panel-title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+/* 6. 검색 패널 (노란색 패널) */
+.panel-search {
+  background-color: var(--panel-yellow);
+  color: var(--text-dark);
+  padding: 2.2rem 2rem;
+}
+
+.panel-search .panel-title {
+  color: var(--text-dark);
+}
+
+.search-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.form-label {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.required-mark {
+  color: #dc2626;
+}
+
+.optional-tag {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-muted-dark);
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.95rem 1.2rem;
+  font-size: 1.05rem;
+  font-family: inherit;
+  border: 2px solid transparent;
+  border-radius: var(--radius-input);
+  background-color: #ffffff;
+  color: var(--text-dark);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-input:focus {
+  border-color: #121214;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(18, 18, 20, 0.2);
+}
+
+.input-group-row {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.input-group-row .form-input {
+  flex: 1;
+  min-width: 220px;
+}
+
+.helper-text {
+  font-size: 0.85rem;
+  color: #4b5563;
+  margin-top: 0.2rem;
+}
+
+.form-alert {
+  padding: 0.85rem 1.2rem;
+  background-color: #fef2f2;
+  border: 2px solid #f87171;
+  color: #991b1b;
+  border-radius: var(--radius-input);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+/* 버튼 공통 스타일 */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.9rem 1.8rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  font-family: inherit;
+  border: none;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  box-shadow: var(--shadow-btn);
+  transition: all 0.2s ease;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* 주요 동작 버튼 (검색 버튼 등) */
+.btn-primary {
+  background-color: var(--text-dark);
+  color: #ffffff;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: #27272a;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+/* 보조 버튼 */
+.btn-secondary {
+  background-color: #ffffff;
+  color: var(--text-dark);
+  border: 2px solid #e4e4e7;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: #f4f4f5;
+  border-color: #d4d4d8;
+}
+
+.btn-search {
+  width: 100%;
+  font-size: 1.15rem;
+  padding: 1.1rem;
+}
+
+.btn-spinner {
+  display: none;
+  width: 18px;
+  height: 18px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.btn.is-loading .btn-text {
+  opacity: 0.8;
+}
+
+.btn.is-loading .btn-spinner {
+  display: inline-block;
+}
+
+/* 7. 추천 패널 (보라색 패널) */
+.panel-recommendation {
+  background-color: var(--panel-purple);
+  color: #ffffff;
+  padding: 2.2rem 2rem;
+}
+
+.panel-title-group {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.panel-desc {
+  font-size: 0.95rem;
+  opacity: 0.9;
+  font-weight: 500;
+  margin-top: 0.2rem;
+}
+
+.info-tag {
+  display: inline-block;
+  background: rgba(0, 0, 0, 0.25);
+  color: #ffffff;
+  padding: 0.35rem 0.8rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-left: auto;
+}
+
+.recommendation-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.25rem;
+  margin-top: 1rem;
+}
+
+/* 추천 개별 카드 */
+.rec-card {
+  background-color: #ffffff;
+  color: var(--text-dark);
+  border-radius: var(--radius-card);
+  padding: 1.4rem;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  position: relative;
+  transition: transform 0.2s ease;
+}
+
+.rec-card:hover {
+  transform: translateY(-4px);
+}
+
+.rec-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.rec-rank-badge {
+  background-color: var(--panel-purple);
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 800;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-pill);
+}
+
+.rec-distance-badge {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #6b21a8;
+  background-color: #f3e8ff;
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--radius-pill);
+}
+
+.rec-course-name {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-dark);
+  margin-top: 0.2rem;
+}
+
+.rec-reason-box {
+  background-color: #faf5ff;
+  border-left: 4px solid var(--panel-purple);
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: #3b0764;
+  font-weight: 500;
+}
+
+.rec-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-muted-dark);
+  padding-top: 0.4rem;
+  border-top: 1px dashed #e4e4e7;
+}
+
+.metric-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: #f4f4f5;
+  padding: 0.25rem 0.55rem;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+/* 8. 전체 검색 결과 패널 & 카드 리스트 */
+.panel-results {
+  background-color: var(--bg-surface);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 2rem;
+}
+
+.results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-bottom: 1.8rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.results-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.highlight-date {
+  color: var(--panel-yellow);
+}
+
+.count-badge {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--text-light);
+  font-size: 0.9rem;
+  font-weight: 700;
+  padding: 0.35rem 0.8rem;
+  border-radius: var(--radius-pill);
+}
+
+.partial-error-banner {
+  background-color: rgba(245, 158, 11, 0.15);
+  border: 1px solid #f59e0b;
+  color: #fbbf24;
+  padding: 0.85rem 1.2rem;
+  border-radius: var(--radius-input);
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.course-cards-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* 골프장 상세 카드 (크림색 및 핑크 포인트) */
+.course-card {
+  background-color: var(--panel-cream);
+  color: var(--text-dark);
+  border-radius: var(--radius-card);
+  padding: 1.6rem;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  position: relative;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.course-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.course-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.course-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.course-name {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text-dark);
+}
+
+.sample-badge {
+  background-color: var(--panel-pink);
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-pill);
+  letter-spacing: 0.2px;
+}
+
+.course-address {
+  font-size: 0.9rem;
+  color: var(--text-muted-dark);
+  margin-top: 0.25rem;
+}
+
+/* 카드 내부 3열 정보 구역 (가격, 티타임, 날씨) */
+.course-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  background-color: #ffffff;
+  padding: 1.2rem;
+  border-radius: 16px;
+  border: 1px solid #f1ece4;
+}
+
+.info-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.info-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-muted-dark);
+  text-transform: uppercase;
+}
+
+.price-value {
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #15803d;
+}
+
+.price-basis {
+  font-size: 0.8rem;
+  color: var(--text-muted-dark);
+  font-weight: 500;
+}
+
+.empty-value {
+  font-size: 0.95rem;
+  color: #9ca3af;
+  font-weight: 600;
+}
+
+/* 티타임 칩 목록 */
+.teetime-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.2rem;
+}
+
+.teetime-chip {
+  background-color: #f4f4f5;
+  color: var(--text-dark);
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 0.25rem 0.55rem;
+  border-radius: 6px;
+}
+
+/* 날씨 블록 */
+.weather-block-content {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.weather-temp {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-dark);
+}
+
+.weather-desc {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #4b5563;
+}
+
+.rain-prob-badge {
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  background-color: #e0f2fe;
+  color: #0369a1;
+}
+
+/* 카드 하단 액션 (예약하기 버튼) */
+.course-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  padding-top: 0.4rem;
+}
+
+.source-meta {
+  font-size: 0.78rem;
+  color: var(--text-muted-dark);
+}
+
+.btn-book {
+  background-color: var(--panel-pink);
+  color: #ffffff;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.95rem;
+}
+
+.btn-book:hover:not(:disabled) {
+  background-color: #e06d91;
+  box-shadow: 0 4px 12px rgba(240, 147, 176, 0.4);
+}
+
+/* 9. 상태별 안내 뷰 (스켈레톤, 로딩, 에러) */
+.status-container {
+  display: flex;
+  justify-content: center;
+}
+
+.status-card {
+  width: 100%;
+  max-width: 600px;
+  background-color: var(--bg-surface);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-panel);
+  padding: 3rem 2rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.status-icon {
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.status-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.status-desc {
+  font-size: 0.95rem;
+  color: var(--text-muted-light);
+  max-width: 440px;
+}
+
+.error-card {
+  border-color: rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.05);
+}
+
+.loading-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid rgba(244, 233, 90, 0.2);
+  border-top-color: var(--panel-yellow);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+/* 10. 예약 미지원 안내 모달 (HTML5 <dialog>) */
+.booking-modal {
+  margin: auto;
+  border: none;
+  background: transparent;
+  padding: 1.5rem;
+  max-width: 480px;
+  width: 100%;
+}
+
+.booking-modal::backdrop {
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+}
+
+.modal-box {
+  background-color: #ffffff;
+  color: var(--text-dark);
+  border-radius: var(--radius-panel);
+  padding: 2.2rem 2rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.modal-icon {
+  font-size: 2.5rem;
+}
+
+.modal-title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--text-dark);
+}
+
+.modal-course-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--panel-purple);
+  margin-top: -0.5rem;
+}
+
+.modal-message-box {
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  padding: 1.2rem;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.modal-message-main {
+  font-size: 0.98rem;
+  color: #991b1b;
+  font-weight: 700;
+}
+
+.modal-message-sub {
+  font-size: 0.88rem;
+  color: #4b5563;
+  line-height: 1.45;
+}
+
+.modal-actions {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 0.6rem;
+  margin-top: 0.6rem;
+}
+
+/* 11. 하단 푸터 */
+.app-footer {
+  text-align: center;
+  padding: 2.5rem 1.5rem;
+  background-color: #08080a;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 0.85rem;
+  color: #71717a;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.footer-disclaimer {
+  font-size: 0.78rem;
+  color: #52525b;
+}
+
+/* 12. 키프레임 애니메이션 */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* 접근성: 애니메이션 감소 선호 사용자 */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* 13. 반응형 미디어 쿼리 */
+@media (max-width: 768px) {
+  .brand-title {
+    font-size: 2rem;
+  }
+  
+  .panel-search, .panel-recommendation, .panel-results {
+    padding: 1.6rem 1.25rem;
+    border-radius: 24px;
+  }
+
+  .panel-title {
+    font-size: 1.35rem;
+  }
+
+  .course-info-grid {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+  }
+
+  .course-card-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn-book {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .input-group-row {
+    flex-direction: column;
+  }
+
+  .btn-secondary {
+    width: 100%;
+  }
+
+  .recommendation-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
